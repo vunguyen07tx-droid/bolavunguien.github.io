@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Portfolio – Học Toán Thú Vị</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#6C63FF;--c2:#FF6584;--c3:#43D9AD;--c4:#FFB830;--c5:#3B82F6;
+  --bg:#F0F4FF;--card:#fff;--txt:#1a1a2e;--muted:#6b7280;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:1.25rem}
+
+/* Header */
+.header{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--card);border-radius:20px;border:0.5px solid rgba(108,99,255,.2);position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(108,99,255,.08)}
+.header::before{content:'';position:absolute;right:-20px;top:-20px;width:140px;height:140px;background:radial-gradient(circle,rgba(108,99,255,.1) 0%,transparent 70%)}
+.logo{width:52px;height:52px;background:linear-gradient(135deg,var(--c1),#9c5cf9);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 4px 12px rgba(108,99,255,.3)}
+.header h1{font-size:22px;font-weight:900;color:var(--c1);letter-spacing:-.3px}
+.header p{font-size:13px;color:var(--muted);font-weight:600}
+.xp-bar-wrap{margin-left:auto;text-align:right;flex-shrink:0}
+.xp-label{font-size:11px;font-weight:800;color:var(--c1);margin-bottom:4px}
+.xp-bar{width:90px;height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--c1),#9c5cf9);border-radius:99px;width:0;transition:width 1s cubic-bezier(.34,1.56,.64,1)}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:1rem;background:var(--card);padding:6px;border-radius:16px;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.tab{flex:1;padding:10px 4px;border:none;border-radius:11px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+.tab.active{background:var(--c1);color:#fff;box-shadow:0 4px 12px rgba(108,99,255,.3)}
+
+/* Sections */
+.section{display:none;animation:fadeIn .25s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Home */
+.streak-row{display:flex;gap:10px;margin-bottom:1rem}
+.streak-card{flex:1;background:var(--card);border-radius:16px;padding:1rem;border:0.5px solid rgba(0,0,0,.06);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.streak-num{font-size:24px;font-weight:900;color:var(--c1)}
+.streak-lbl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+
+.topics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem}
+.topic-card{background:var(--card);border-radius:18px;padding:1.1rem;border:0.5px solid rgba(0,0,0,.06);cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.topic-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.1)}
+.topic-card::after{content:'';position:absolute;bottom:-25px;right:-25px;width:80px;height:80px;border-radius:50%;opacity:.12}
+.topic-card[data-c="purple"]::after{background:#6C63FF}
+.topic-card[data-c="pink"]::after{background:#FF6584}
+.topic-card[data-c="teal"]::after{background:#43D9AD}
+.topic-card[data-c="amber"]::after{background:#FFB830}
+.topic-icon{font-size:30px;margin-bottom:8px;display:block}
+.topic-name{font-size:14px;font-weight:800;margin-bottom:4px}
+.topic-desc{font-size:11px;color:var(--muted);font-weight:600}
+.topic-progress{height:5px;background:#f0f0f0;border-radius:99px;margin-top:12px;overflow:hidden}
+.topic-bar{height:100%;border-radius:99px}
+.topic-card[data-c="purple"] .topic-name{color:#6C63FF}
+.topic-card[data-c="purple"] .topic-bar{background:linear-gradient(90deg,#6C63FF,#9c5cf9)}
+.topic-card[data-c="pink"] .topic-name{color:#FF6584}
+.topic-card[data-c="pink"] .topic-bar{background:linear-gradient(90deg,#FF6584,#ff8fa3)}
+.topic-card[data-c="teal"] .topic-name{color:#0d9373}
+.topic-card[data-c="teal"] .topic-bar{background:linear-gradient(90deg,#43D9AD,#6ee7c7)}
+.topic-card[data-c="amber"] .topic-name{color:#d97706}
+.topic-card[data-c="amber"] .topic-bar{background:linear-gradient(90deg,#FFB830,#ffd166)}
+
+.recent-card{background:var(--card);border-radius:16px;padding:1.1rem 1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.recent-title{font-size:14px;font-weight:800;color:var(--c1);margin-bottom:.85rem}
+.recent-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid #f0f0f0}
+.recent-item:last-child{border-bottom:none;padding-bottom:0}
+.recent-icon{font-size:20px;width:36px;height:36px;background:#f3f4f6;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.recent-text{flex:1;font-size:13px;font-weight:700}
+.recent-time{font-size:11px;color:var(--muted);font-weight:600}
+
+/* Quiz */
+.quiz-card{background:var(--card);border-radius:22px;padding:1.5rem;border:0.5px solid rgba(108,99,255,.15);box-shadow:0 4px 20px rgba(108,99,255,.08)}
+.quiz-meta{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.quiz-badge{background:rgba(108,99,255,.1);color:var(--c1);font-size:11px;font-weight:800;padding:5px 12px;border-radius:99px}
+.quiz-progress{flex:1;height:6px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--c1),#9c5cf9);border-radius:99px;transition:width .5s ease}
+.quiz-score{font-size:13px;font-weight:800;color:var(--c4)}
+.quiz-q{font-size:20px;font-weight:900;margin-bottom:.5rem;line-height:1.4;color:var(--txt)}
+.quiz-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:1.25rem}
+.quiz-hint{background:rgba(67,217,173,.1);color:#0d9373;font-size:13px;font-weight:700;padding:10px 14px;border-radius:12px;margin-bottom:1.25rem;display:none;border:1px solid rgba(67,217,173,.3)}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+.opt{border:2px solid #e5e7eb;background:var(--card);border-radius:14px;padding:.9rem;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--txt);display:flex;align-items:center;gap:10px;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--c1);color:var(--c1);background:rgba(108,99,255,.04);transform:translateY(-1px)}
+.opt.correct{border-color:#43D9AD;background:rgba(67,217,173,.1);color:#0d9373}
+.opt.wrong{border-color:#FF6584;background:rgba(255,101,132,.08);color:#c0384f}
+.opt-letter{width:26px;height:26px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;transition:background .2s}
+.opt.correct .opt-letter{background:rgba(67,217,173,.3)}
+.opt.wrong .opt-letter{background:rgba(255,101,132,.2)}
+.quiz-actions{display:flex;gap:8px}
+.btn-hint{flex:1;padding:.75rem;border:2px solid #e5e7eb;background:transparent;border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;color:var(--muted);transition:all .2s}
+.btn-hint:hover:not(:disabled){border-color:var(--c4);color:var(--c4);background:rgba(255,184,48,.06)}
+.btn-hint:disabled{opacity:.5;cursor:not-allowed}
+.btn-next{flex:2;padding:.75rem;border:none;background:linear-gradient(135deg,var(--c1),#9c5cf9);border-radius:12px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;color:#fff;transition:all .2s;display:none;box-shadow:0 4px 12px rgba(108,99,255,.3)}
+.btn-next:hover{opacity:.9;transform:translateY(-1px)}
+
+.result-card{background:var(--card);border-radius:22px;padding:2rem;border:0.5px solid rgba(67,217,173,.2);text-align:center;display:none;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.result-emoji{font-size:60px;margin-bottom:.75rem;display:block}
+.result-title{font-size:24px;font-weight:900;color:var(--c1);margin-bottom:.4rem}
+.result-sub{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:1.5rem}
+.score-ring{width:100px;height:100px;margin:0 auto 1.5rem;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:var(--c1)}
+.btn-retry{padding:.85rem 2.5rem;border:none;background:linear-gradient(135deg,var(--c1),#9c5cf9);border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;color:#fff;box-shadow:0 4px 16px rgba(108,99,255,.3);transition:all .2s}
+.btn-retry:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(108,99,255,.35)}
+
+/* Visual */
+.viz-area{background:var(--card);border-radius:20px;padding:1.35rem;border:0.5px solid rgba(0,0,0,.06);margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.viz-title{font-size:15px;font-weight:800;color:var(--c1);margin-bottom:.85rem}
+.table-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:3px}
+.cell{aspect-ratio:1;background:#f3f4f6;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .25s}
+.cell.hi{background:var(--c1);color:#fff;transform:scale(1.1);z-index:1;box-shadow:0 2px 8px rgba(108,99,255,.3)}
+.cell.header{background:#e8e5ff;color:var(--c1);font-size:9px;font-weight:900}
+.viz-controls{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem}
+.viz-btn{padding:5px 13px;border:2px solid #e5e7eb;background:transparent;border-radius:99px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;color:var(--muted);transition:all .2s}
+.viz-btn:hover,.viz-btn.active{border-color:var(--c1);color:var(--c1);background:rgba(108,99,255,.08)}
+
+.formula-box{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.formula-chip{background:rgba(108,99,255,.08);color:var(--c1);border-radius:12px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.formula-chip:hover,.formula-chip.active{border-color:var(--c1);background:rgba(108,99,255,.16)}
+.formula-display{min-height:70px;display:flex;align-items:center;justify-content:center;background:#f8f7ff;border-radius:14px;padding:1rem;text-align:center}
+.formula-name{font-size:16px;font-weight:900;color:var(--c1);margin-bottom:4px}
+.formula-ex{font-size:13px;color:var(--muted);font-weight:600}
+
+.speed-q{font-size:36px;font-weight:900;text-align:center;padding:1rem;color:var(--c1)}
+.speed-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.speed-btn{padding:.85rem;border:2px solid #e5e7eb;background:var(--card);border-radius:14px;font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;cursor:pointer;transition:all .2s;color:var(--txt)}
+.speed-btn:hover{border-color:var(--c1);background:rgba(108,99,255,.04);transform:scale(1.02)}
+.speed-btn.correct-ans{border-color:#43D9AD;background:rgba(67,217,173,.1);color:#0d9373}
+.speed-btn.wrong-ans{border-color:#FF6584;background:rgba(255,101,132,.08);color:#c0384f}
+.speed-msg{text-align:center;font-size:14px;font-weight:800;min-height:24px;transition:all .2s}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">🧮</div>
+    <div>
+      <h1>Digital Portfolio</h1>
+    </div>
+    <div class="xp-bar-wrap">
+      <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('home',this)">🏠 Trang giới thiệu</button>
+    <button class="tab" onclick="switchTab('quiz',this)">🎯 Trang dự án</button>
+    <button class="tab" onclick="switchTab('visual',this)">📊 Trang Tổng kết</button>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <div class="intro-card" style="background:var(--card);border-radius:20px;padding:1.5rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.05)">
+      <h2 style="font-size:20px;font-weight:900;color:var(--c1);margin-bottom:1rem">Giới thiệu</h2>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem"><strong>Họ và tên:</strong> Nguyễn Thế Vũ Nguyên</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem"><strong>Ngành học:</strong> Khoa học Giáo dục và khác</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:1.5rem"><strong>Sở thích:</strong> Nghe nhạc</p>
+      <div style="border-top:1px solid rgba(0,0,0,.08);padding-top:1rem;margin-top:1rem">
+        <h3 style="font-size:16px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">Mục tiêu học tập và định hướng phát triển cá nhân</h3>
+        <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem"><strong>Mục tiêu học tập:</strong> Trang bị vững vàng kiến thức nền tảng về khoa học giáo dục, đồng thời tìm hiểu thêm các lĩnh vực liên quan như tâm lý học, công nghệ giáo dục để có cái nhìn đa chiều.</p>
+        <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem"><strong>Định hướng phát triển:</strong> Trở thành người làm việc trong môi trường giáo dục hoặc đào tạo, có khả năng thiết kế và tổ chức hoạt động học tập sáng tạo, thân thiện. Bên cạnh đó, tiếp tục nuôi dưỡng niềm đam mê âm nhạc như một cách cân bằng cảm xúc và tăng khả năng tập trung.</p>
+      </div>
+      <div style="border-top:1px solid rgba(0,0,0,.08);padding-top:1rem;margin-top:1rem">
+        <h3 style="font-size:16px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">Mục tiêu của Portfolio này</h3>
+        <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Thể hiện các kỹ năng số đã được học và rèn luyện trong quá trình học tập.</p>
+        <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Lưu trữ có hệ thống các sản phẩm cá nhân (bài tập, dự án, ý tưởng) để dễ dàng truy cập, chỉnh sửa và chia sẻ với giảng viên, bạn bè, nhà tuyển dụng.</p>
+        <p style="font-size:14px;color:var(--txt);margin-bottom:0">Minh chứng cho sự phát triển năng lực và tư duy của bản thân qua từng giai đoạn.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
+    <div id="projectsGrid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
+      <a href="#" data-project="1" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(1); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 1: Máy tính và các thiết bị ngoại vi</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+      <a href="#" data-project="2" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(2); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 2: Khai thác dữ liệu và thông tin</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+      <a href="#" data-project="3" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(3); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 3: Tổng quan về trí tuệ nhân tạo</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+      <a href="#" data-project="4" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(4); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 4: Giao tiếp và hợp tác trong môi trường số</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+      <a href="#" data-project="5" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(5); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 5: Sáng tạo nội dung số</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+      <a href="#" data-project="6" style="display:block;background:var(--card);border-radius:18px;padding:1.25rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 18px rgba(0,0,0,.05);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;cursor:pointer" onclick="openProject(6); event.preventDefault()">
+        <div style="font-size:28px;margin-bottom:0.85rem">📁</div>
+        <div style="font-size:15px;font-weight:900;color:var(--c1);margin-bottom:0.5rem">Bài 6: An toàn và liêm chính học thuật trong môi trường số</div>
+        <div style="font-size:13px;color:var(--muted);">Nhấp để mở</div>
+      </a>
+    </div>
+    <div id="projectDetail" style="display:none;margin-top:2rem">
+      <button onclick="closeProject()" style="padding:0.6rem 1.5rem;border:2px solid var(--c1);background:transparent;color:var(--c1);border-radius:12px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-bottom:1.5rem">← Quay lại</button>
+      <div style="background:var(--card);border-radius:20px;padding:1.5rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.05)">
+        <h2 id="projectTitle" style="font-size:20px;font-weight:900;color:var(--c1);margin-bottom:1rem"></h2>
+        <div id="projectContent" style="font-size:14px;color:var(--txt);line-height:1.6">
+          <p>Nội dung bài học sẽ được cập nhật trong thời gian sớm nhất.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISUAL -->
+  <div id="visual" class="section">
+    <div style="background:var(--card);border-radius:20px;padding:1.5rem;border:0.5px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.05)">
+      <h2 style="font-size:22px;font-weight:900;color:var(--c1);margin-bottom:1rem">Tổng kết hành trình Kỹ năng số</h2>
+      <h3 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">1. Giới thiệu</h3>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Trong kỷ nguyên số và sự bùng nổ của trí tuệ nhân tạo (AI), năng lực số không còn là một kỹ năng bổ trợ mà đã trở thành năng lực cốt lõi, quyết định sự thành bại của sinh viên trong cả học tập lẫn môi trường nghề nghiệp tương lai. Nhận thức được tầm quan trọng đó, học phần Kỹ năng số (CNS) tại Trường Đại học Giáo dục - ĐHQGHN đã mang đến cho em một lộ trình trải nghiệm toàn diện.</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Từ những thao tác kỹ thuật nền tảng ban đầu, đến việc tối ưu hóa tư duy tương tác với AI, tổ chức làm việc nhóm trực tuyến và thực thi một dự án truyền thông sáng tạo, em đã có cơ hội cọ xát và tự đánh giá năng lực của bản thân. Bài tiểu luận này là cái nhìn phản chiếu lại hành trình phát triển năng lực số của cá nhân em từ đầu học kỳ đến nay, qua đó chỉ ra những bước tiến bộ, những thách thức đã vượt qua và định hướng tự hoàn thiện trong tương lai.</p>
+
+      <h3 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">2. Phân tích sự phát triển năng lực số qua các bài tập</h3>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Hành trình nâng cao năng lực số của em được cấu trúc chặt chẽ qua bốn giai đoạn tương ứng với các nhiệm vụ học tập thực tế:</p>
+
+      <h4 style="font-size:16px;font-weight:800;color:var(--c1);margin-bottom:0.5rem">Giai đoạn 1: Quản trị dữ liệu và năng lực tổ chức hệ thống số</h4>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Trước khi tham gia học phần, dữ liệu học tập của em gặp phải tình trạng phân tán ở nhiều nơi (Desktop, Downloads, Documents), tên file không nhất quán như file1.docx, bai tap moi.docx dẫn đến việc mất nhiều thời gian tìm kiếm và rủi ro mất mát dữ liệu do chưa được sao lưu.</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Qua Bài tập cá nhân 1 và Bài tập tổ chức dữ liệu, em đã chuẩn hóa lại tư duy quản lý tài nguyên số của mình:</p>
+      <ul style="margin-left:1.5rem;margin-bottom:1rem;color:var(--txt)">
+        <li style="margin-bottom:0.5rem;"><strong>Về kỹ thuật:</strong> Thành thạo các thao tác quản lý tệp tin nền tảng (tạo, đổi tên, di chuyển, cắt dán thông qua các phím tắt Windows + E, Ctrl + C, Ctrl + V, Ctrl + X).</li>
+        <li style="margin-bottom:0.5rem;"><strong>Về tư duy hệ thống:</strong> Em đã tự thiết kế và tái cấu trúc dữ liệu theo sơ đồ cây khoa học, phân chia rõ ràng thành các phân hệ mục tiêu (01_HocTap, 03_HinhAnh, 04_Video) và áp dụng nghiêm ngặt nguyên tắc đặt tên file thống nhất.</li>
+        <li style="margin-bottom:0.5rem;"><strong>Về an toàn thông tin:</strong> Điểm tiến bộ lớn nhất là việc em thấu hiểu và áp dụng thành công chiến lược sao lưu 3-2-1 (3 bản dữ liệu, 2 loại lưu trữ khác nhau như Ổ cứng ngoài và Đám mây Google Drive/OneDrive, 1 bản lưu ngoài thiết bị chính) giúp tối ưu hóa tính an toàn cho toàn bộ tài liệu học thuật.</li>
+      </ul>
+
+      <h4 style="font-size:16px;font-weight:800;color:var(--c1);margin-bottom:0.5rem">Giai đoạn 2: Năng lực khai thác và giao tiếp với Trí tuệ nhân tạo (AI Literacy)</h4>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Sự phát triển đột phá về tư duy công nghệ của em được minh chứng rất rõ qua Bài tập cá nhân 2 (Viết Prompt hiệu quả). Thay vì chỉ sử dụng AI ở mức độ bề nổi với những câu lệnh ngây ngô, chung chung kiểu "Hãy giải thích lạm phát là gì" (Prompt cơ bản), em đã nâng cấp năng lực kỹ thuật của mình qua 3 cấp độ cấu trúc câu lệnh:</p>
+      <ul style="margin-left:1.5rem;margin-bottom:1rem;color:var(--txt)">
+        <li style="margin-bottom:0.5rem;">Hiểu cách định vị đối tượng người đọc ở Prompt cải tiến.</li>
+        <li style="margin-bottom:0.5rem;">Làm chủ kỹ thuật phối hợp đỉnh cao: Role-play (Đóng vai chuyên gia) kết hợp với Chain-of-Thought (Chuỗi lý luận tư duy) ở Prompt nâng cao.</li>
+      </ul>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Việc ép AI phải tư duy qua từng bước logic (từ ví dụ thực tế đến phân tích cung - cầu rồi mới kết luận) không chỉ giúp kết quả đầu ra sâu sắc, mang tính sư phạm cao mà còn giúp bản thân em rèn luyện tư duy phản biện khi đóng vai trò là người kiểm định hệ thống.</p>
+
+      <h4 style="font-size:16px;font-weight:800;color:var(--c1);margin-bottom:0.5rem">Giai đoạn 3: Năng lực hợp tác, quản trị dự án trên không gian ảo</h4>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Khi bước vào Bài tập nhóm thiết kế "Cẩm nang Kỹ năng số", năng lực số của em được đặt vào bối cảnh tập thể trực tuyến. Đối mặt với các thách thức kinh điển của việc học từ xa như sự phân tán tập trung, trễ hạn (deadline) và thất lạc thông tin, em cùng các thành viên đã thiết lập một "hệ sinh thái làm việc số" chuyên nghiệp:</p>
+      <ul style="margin-left:1.5rem;margin-bottom:1rem;color:var(--txt)">
+        <li style="margin-bottom:0.5rem;">Sử dụng Trello để trực quan hóa tiến độ công việc theo các cột To Do - Doing - Done, giảm thiểu sự thụ động của thành viên.</li>
+        <li style="margin-bottom:0.5rem;">Tối ưu hóa Discord bằng cách phân loại các kênh thảo luận chuyên biệt để luồng thông tin không bị loãng.</li>
+        <li style="margin-bottom:0.5rem;">Tận dụng tính năng cộng tác thời gian thực và bình luận trực tiếp trên Google Docs, kết hợp quản trị dữ liệu tập trung trên Google Drive theo quy tắc đặt tên nghiêm ngặt Tensinhvien_Noidung.</li>
+      </ul>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Trải nghiệm này đã nâng tầm em từ một cá nhân sử dụng công cụ đơn lẻ trở thành một người có khả năng điều phối và cộng tác hiệu quả trong môi trường số.</p>
+
+      <h4 style="font-size:16px;font-weight:800;color:var(--c1);margin-bottom:0.5rem">Giai đoạn 4: Tư duy sáng tạo nội dung số và đạo đức công nghệ</h4>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Đỉnh cao của chuỗi hoạt động là Báo cáo dự án sáng tạo Infographic: "Hiểu đúng về Rác thải điện tử (E-waste)". Đây là lúc em tổng hợp toàn bộ các năng lực đã học để tạo ra một sản phẩm số có giá trị xã hội. Dự án ghi nhận sự phối hợp đa công cụ (Multimodal AI): Google Gemini để nghiên cứu nội dung, Nano Banana để tạo hình ảnh ẩn dụ mang tính nghệ thuật, và Canva AI / Magic Design để tự động hóa bố cục, bảng màu.</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Quan trọng hơn cả sản phẩm kỹ thuật, dự án này đã đánh dấu sự trưởng thành vượt bậc của em về đạo đức AI và liêm chính học thuật (được củng cố sâu sắc qua Bài tập 4 về việc nghiên cứu chính sách của ĐHQGHN - Quyết định 3499/QĐ-ĐHQGHN):</p>
+      <ul style="margin-left:1.5rem;margin-bottom:1rem;color:var(--txt)">
+        <li style="margin-bottom:0.5rem;">Em nhận thức rõ ranh giới giữa "AI hỗ trợ" và "gian lận học thuật".</li>
+        <li style="margin-bottom:0.5rem;">Em hiểu được các vấn đề cốt lõi về bản quyền (Copyright), tính minh bạch (Transparency) và rủi ro thiên kiến/ảo giác (Hallucination) của máy móc.</li>
+        <li style="margin-bottom:0.5rem;">Việc chủ động đưa dòng chữ minh bạch: "Hình ảnh và dữ liệu được hỗ trợ tổng hợp bởi công cụ AI, nội dung được biên tập bởi con người" vào góc sản phẩm chính là minh chứng cho một tư duy công dân số có trách nhiệm.</li>
+      </ul>
+
+      <h3 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">3. Tự đánh giá và định hướng tương lai</h3>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Nhìn lại toàn bộ hành trình, em tự đánh giá sự phát triển năng lực số của mình dựa trên Khung năng lực số dành cho sinh viên thông qua bảng đối chiếu sau:</p>
+      <div style="overflow-x:auto;margin-bottom:1rem">
+        <table style="width:100%;border-collapse:collapse;text-align:left;font-size:14px;color:var(--txt)">
+          <thead>
+            <tr style="background:rgba(108,99,255,.08)">
+              <th style="border:1px solid #e5e7eb;padding:0.75rem">Tiêu chí năng lực số</th>
+              <th style="border:1px solid #e5e7eb;padding:0.75rem">Tình trạng đầu kỳ</th>
+              <th style="border:1px solid #e5e7eb;padding:0.75rem">Mức độ đạt được cuối kỳ</th>
+              <th style="border:1px solid #e5e7eb;padding:0.75rem">Minh chứng thực tế</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">1. Quản lý dữ liệu & thông tin</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Yếu, file để lộn xộn, không có kế hoạch sao lưu dữ liệu.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Xuất sắc, làm chủ tư duy cây thư mục và quy tắc 3-2-1.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Bài tập cá nhân 1, cấu trúc hệ thống DATA cá nhân.</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">2. Giao tiếp & Hợp tác số</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Chỉ dùng mạng xã hội thông thường, chưa biết làm việc nhóm từ xa.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Tốt, sử dụng thành thạo các nền tảng quản trị dự án trực tuyến.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Bài tập nhóm phối hợp nhịp nhàng trên Trello, Google Suite, Discord.</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">3. Sáng tạo nội dung số</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Chỉ biết soạn thảo văn bản Word đơn giản.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Tốt, biết thiết kế Infographic phối hợp đa công cụ AI sáng tạo.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Dự án Infographic rác thải điện tử phối hợp Gemini - Nano Banana - Canva.</td>
+            </tr>
+            <tr>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">4. An toàn & Đạo đức số</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Chưa hiểu rõ về bản quyền AI, sử dụng AI theo bản năng.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Xuất sắc, nắm vững chính sách VNU, cam kết liêm chính học thuật.</td>
+              <td style="border:1px solid #e5e7eb;padding:0.75rem">Bài tập 4, bài phân tích đạo đức trong dự án sáng tạo.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem"><strong>Định hướng phát triển trong tương lai</strong></p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Dù đã đạt được những bước tiến dài, em nhận thấy bản thân cần tiếp tục mài dũa năng lực số để không bị tụt hậu. Trong thời gian tới, em đặt ra các mục tiêu hành động cụ thể:</p>
+      <ul style="margin-left:1.5rem;margin-bottom:1rem;color:var(--txt)">
+        <li style="margin-bottom:0.5rem;">Tiếp tục cập nhật và làm chủ các mô hình AI thế hệ mới để ứng dụng sâu hơn vào việc phân tích dữ liệu nghiên cứu khoa học tại Trường Đại học Giáo dục.</li>
+        <li style="margin-bottom:0.5rem;">Tuyệt đối tuân thủ 6 cam kết về liêm chính học thuật đã đề ra trong Bài tập 4, luôn đặt tư duy độc lập của con người làm gốc (chiếm 60% chất lượng sản phẩm như đúc kết trong dự án E-waste).</li>
+        <li style="margin-bottom:0.5rem;">Chia sẻ, hỗ trợ bạn bè xung quanh cùng xây dựng và chuẩn hóa hệ thống quản trị dữ liệu an toàn để lan tỏa tinh thần của một cộng đồng sinh viên số văn minh.</li>
+      </ul>
+
+      <h3 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:0.75rem">4. Kết luận</h3>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0.75rem">Học phần Kỹ năng số không đơn thuần dạy cho em cách sử dụng một vài phần mềm, mà quan trọng hơn, nó đã tái định hình tư duy của em trong không gian số. Từ một sinh viên còn bỡ ngỡ, thụ động trước dữ liệu và công nghệ, em đã chuyển mình thành một người làm chủ công cụ, biết cộng tác hiệu quả, sáng tạo có trách nhiệm và luôn thượng tôn đạo đức tri thức.</p>
+      <p style="font-size:14px;color:var(--txt);margin-bottom:0">Những năng lực số quý báu tích lũy được từ chuỗi bài tập này chắc chắn sẽ là bệ phóng vững chắc hành trang cho em trên con đường học tập và phát triển sự nghiệp tương lai tại ĐHQGHN.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── XP bar animation on load ──
+setTimeout(() => { document.getElementById('xpFill').style.width = '62%'; }, 400);
+
+// ── Tab switching ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function goQuiz() {
+  document.querySelectorAll('.tab')[1].click();
+}
+
+// ── Quiz ──
+const questions = [
+  { q: '15 + 28 = ?', opts: [43, 42, 44, 41], ans: 0, hint: 'Cộng hàng đơn vị trước: 5 + 8 = 13, nhớ 1' },
+  { q: '7 × 8 = ?', opts: [54, 56, 63, 48], ans: 1, hint: 'Nhớ: "7 lần 8 là 56"' },
+  { q: '144 ÷ 12 = ?', opts: [11, 13, 12, 14], ans: 2, hint: '12 × ? = 144 → 12 × 12 = 144' },
+  { q: '¾ + ¼ = ?', opts: ['½', '1', '1½', '¾'], ans: 1, hint: 'Mẫu bằng nhau: tử 3+1=4, mẫu 4 → 4/4 = 1' },
+  { q: 'Hình vuông cạnh 6 cm, diện tích = ?', opts: ['24 cm²', '36 cm²', '12 cm²', '30 cm²'], ans: 1, hint: 'Diện tích hình vuông = cạnh × cạnh = 6 × 6' },
+];
+let qIdx = 0, score = 0, answered = false;
+
+function initQuiz() {
+  qIdx = 0; score = 0; answered = false;
+  document.getElementById('quizMain').style.display = 'block';
+  document.getElementById('resultCard').style.display = 'none';
+  showQ();
+}
+
+function showQ() {
+  const q = questions[qIdx];
+  document.getElementById('qBadge').textContent = `Câu ${qIdx + 1} / ${questions.length}`;
+  document.getElementById('qProg').style.width = `${((qIdx + 1) / questions.length) * 100}%`;
+  document.getElementById('qScore').textContent = `${score} ⭐`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qHint').style.display = 'none';
+  document.getElementById('btnNext').style.display = 'none';
+  document.getElementById('btnHint').disabled = false;
+  answered = false;
+  const oc = document.getElementById('qOpts');
+  oc.innerHTML = '';
+  ['A', 'B', 'C', 'D'].forEach((letter, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="opt-letter">${letter}</span>${q.opts[i]}`;
+    b.onclick = () => selectOpt(i, b);
+    oc.appendChild(b);
+  });
+}
+
+function selectOpt(i, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qIdx];
+  document.querySelectorAll('.opt').forEach((b, j) => {
+    b.disabled = true;
+    if (j === q.ans) b.classList.add('correct');
+    else if (j === i && i !== q.ans) b.classList.add('wrong');
+  });
+  if (i === q.ans) score++;
+  document.getElementById('btnNext').style.display = 'block';
+}
+
+function showHint() {
+  const q = questions[qIdx];
+  const h = document.getElementById('qHint');
+  h.textContent = '💡 ' + q.hint;
+  h.style.display = 'block';
+  document.getElementById('btnHint').disabled = true;
+}
+
+function nextQ() {
+  qIdx++;
+  if (qIdx < questions.length) { showQ(); }
+  else { showResult(); }
+}
+
+function showResult() {
+  document.getElementById('quizMain').style.display = 'none';
+  const rc = document.getElementById('resultCard');
+  rc.style.display = 'block';
+  const pct = Math.round((score / questions.length) * 100);
+  document.getElementById('rEmoji').textContent = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪';
+  document.getElementById('rTitle').textContent = pct >= 80 ? 'Xuất sắc!' : pct >= 60 ? 'Tốt lắm!' : 'Cố lên nhé!';
+  document.getElementById('rSub').textContent = `Bạn đã trả lời đúng ${score}/${questions.length} câu`;
+  document.getElementById('scoreText').textContent = pct + '%';
+  const circumference = 2 * Math.PI * 40;
+  const offset = circumference - (pct / 100) * circumference;
+  setTimeout(() => { document.getElementById('scoreCircle').style.strokeDashoffset = offset; }, 150);
+}
+
+function restartQuiz() { initQuiz(); }
+
+// ── Multiplication Table ──
+let activeM = 2;
+function buildMultTable(m) {
+  activeM = m;
+  document.querySelectorAll('.viz-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent == m);
+  });
+  const tbl = document.getElementById('multTable');
+  tbl.innerHTML = '';
+  for (let r = 0; r <= 10; r++) {
+    for (let c = 0; c <= 10; c++) {
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (r === 0 && c === 0) { d.textContent = '×'; d.classList.add('header'); }
+      else if (r === 0) { d.textContent = c; d.classList.add('header'); }
+      else if (c === 0) { d.textContent = r; d.classList.add('header'); }
+      else {
+        d.textContent = r * c;
+        if (r === m || c === m) d.classList.add('hi');
+      }
+      tbl.appendChild(d);
+    }
+  }
+}
+
+function buildControls() {
+  const cc = document.getElementById('multControls');
+  for (let i = 2; i <= 9; i++) {
+    const b = document.createElement('button');
+    b.className = 'viz-btn' + (i === 2 ? ' active' : '');
+    b.textContent = i;
+    b.onclick = () => buildMultTable(i);
+    cc.appendChild(b);
+  }
+}
+
+// ── Formulas ──
+const formulas = [
+  { name: '⬛ Hình vuông', desc: 'Diện tích = cạnh²', ex: 'Ví dụ: cạnh 5 cm → S = 5² = 25 cm²' },
+  { name: '▬ Hình chữ nhật', desc: 'Diện tích = dài × rộng', ex: 'Ví dụ: 8 cm × 3 cm = 24 cm²' },
+  { name: '⭕ Hình tròn', desc: 'Diện tích = π × r²', ex: 'Ví dụ: r = 4 cm → 3.14 × 16 ≈ 50.3 cm²' },
+  { name: '🔺 Tam giác', desc: 'Diện tích = (đáy × cao) ÷ 2', ex: 'Ví dụ: đáy 6, cao 4 → S = 12 cm²' },
+];
+let formulasBuilt = false;
+function buildFormulas() {
+  if (formulasBuilt) return;
+  formulasBuilt = true;
+  const fb = document.getElementById('formulaBox');
+  formulas.forEach((f, idx) => {
+    const c = document.createElement('div');
+    c.className = 'formula-chip';
+    c.textContent = f.name;
+    c.onclick = () => {
+      document.querySelectorAll('.formula-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      document.getElementById('formulaDisplay').innerHTML =
+        `<div><div class="formula-name">${f.desc}</div><div class="formula-ex">${f.ex}</div></div>`;
+    };
+    fb.appendChild(c);
+  });
+}
+
+// ── Speed Quiz ──
+let speedAnswered = false;
+function buildSpeedQ() {
+  speedAnswered = false;
+  document.getElementById('speedMsg').textContent = '';
+  const ops = ['+', '-', '×'];
+  const op = ops[Math.floor(Math.random() * 3)];
+  let a = Math.floor(Math.random() * 9) + 2;
+  let b = Math.floor(Math.random() * 9) + 2;
+  let ans;
+  if (op === '+') ans = a + b;
+  else if (op === '-') { if (a < b) [a, b] = [b, a]; ans = a - b; }
+  else ans = a * b;
+  document.getElementById('speedQ').textContent = `${a} ${op} ${b} = ?`;
+  const opts = [ans];
+  while (opts.length < 4) {
+    const r = ans + Math.floor(Math.random() * 10) - 5;
+    if (r !== ans && r >= 0 && !opts.includes(r)) opts.push(r);
+  }
+  opts.sort(() => Math.random() - .5);
+  const oc = document.getElementById('speedOpts');
+  oc.innerHTML = '';
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'speed-btn';
+    b.textContent = o;
+    b.onclick = () => {
+      if (speedAnswered) return;
+      speedAnswered = true;
+      const msg = document.getElementById('speedMsg');
+      if (o === ans) {
+        b.classList.add('correct-ans');
+        msg.style.color = '#0d9373';
+        msg.textContent = '✅ Đúng rồi! Tuyệt vời!';
+      } else {
+        b.classList.add('wrong-ans');
+        msg.style.color = '#c0384f';
+        msg.textContent = `❌ Sai! Đáp án đúng là ${ans}`;
+        // highlight correct
+        document.querySelectorAll('.speed-btn').forEach(sb => {
+          if (parseInt(sb.textContent) === ans) sb.classList.add('correct-ans');
+        });
+      }
+      setTimeout(buildSpeedQ, 1800);
+    };
+    oc.appendChild(b);
+  });
+}
+
+// ── Project Management ──
+const projectData = {
+  1: { title: 'Bài 1: Máy tính và các thiết bị ngoại vi', content: '<div style="margin-bottom: 1rem;"><strong>Sinh viên:</strong> 25011196 – Nguyễn Thế Vũ Nguyên</div><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">Đề bài: Thao tác cơ bản với tệp tin và thư mục</h3><ol style="padding-left: 2rem;"><li style="margin-bottom: 0.75rem;"><strong>Mở File Explorer:</strong> Nhấn tổ hợp phím Windows + E hoặc nhấp vào biểu tượng thư mục màu vàng trên thanh tác vụ.</li><li style="margin-bottom: 0.75rem;"><strong>Truy cập ổ đĩa/thư mục:</strong> Ở cột bên trái, nhấp vào This PC, sau đó nhấp đúp vào một ổ đĩa không phải ổ hệ thống (ví dụ: ổ D: hoặc E:). Nếu chỉ có ổ C:, hãy vào thư mục Documents.</li><li style="margin-bottom: 0.75rem;"><strong>Tạo thư mục mới:</strong> Nhấp chuột phải vào một khoảng trống -> chọn New -> Folder. Đặt tên thư mục là ThucHanh_hotensinhvien (ví dụ: ThucHanh_NguyenVanA). Nhấn Enter.</li><li style="margin-bottom: 0.75rem;"><strong>Vào thư mục vừa tạo:</strong> Nhấp đúp vào thư mục ThucHanh_NguyenVanA.</li><li style="margin-bottom: 0.75rem;"><strong>Tạo tệp tin văn bản:</strong> Nhấp chuột phải vào khoảng trống -> New -> Text Document. Đặt tên là GhiChu.txt. Nhấn Enter</li><li style="margin-bottom: 0.75rem;"><strong>Đổi tên tệp tin:</strong> Nhấp chuột phải vào tệp GhiChu.txt -> chọn Rename. Đổi tên thành GhiChuQuanTrong.txt. Nhấn Enter.</li><li style="margin-bottom: 0.75rem;"><strong>Tạo thư mục con:</strong> Trong thư mục ThucHanh_NguyenVanA, nhấp chuột phải -> New -> Folder. Đặt tên là TaiLieu.</li><li style="margin-bottom: 0.75rem;"><strong>Sao chép tệp tin (Copy & Paste):</strong> Nhấp chuột phải vào tệp GhiChuQuanTrong.txt -> chọn Copy (hoặc chọn tệp rồi nhấn Ctrl + C). Nhấp đúp vào thư mục TaiLieu, nhấp chuột phải vào khoảng trống bên trong -> chọn Paste (hoặc nhấn Ctrl + V). Bây giờ bạn có một bản sao của tệp trong thư mục TaiLieu.</li><li style="margin-bottom: 0.75rem;"><strong>Di chuyển tệp tin (Cut & Paste):</strong> Quay lại thư mục ThucHanh_NguyenVanA. Tạo một tệp mới tên là DiChuyen.txt. Nhấp chuột phải vào tệp DiChuyen.txt -> chọn Cut (hoặc chọn tệp rồi nhấn Ctrl + X). Nhấp đúp vào thư mục TaiLieu, nhấp chuột phải vào khoảng trống -> chọn Paste (hoặc nhấn Ctrl + V). Tệp gốc đã biến mất khỏi vị trí cũ và chỉ còn ở vị trí mới.</li><li style="margin-bottom: 0.75rem;"><strong>Xóa tệp tin:</strong> Trong thư mục TaiLieu, nhấp chuột phải vào tệp GhiChuQuanTrong.txt -> chọn Delete. Tệp sẽ được chuyển vào Thùng rác (Recycle Bin).</li><li style="margin-bottom: 0.75rem;"><strong>Xóa vĩnh viễn:</strong> Chọn tệp DiChuyen.txt, nhấn giữ phím Shift và nhấn phím Delete. Một cảnh báo sẽ hiện ra. Nếu đồng ý, tệp sẽ bị xóa vĩnh viễn mà không qua Thùng rác.</li><li style="margin-bottom: 0.75rem;"><strong>Khôi phục từ Thùng rác (Tùy chọn):</strong> Tìm biểu tượng Recycle Bin trên màn hình nền, nhấp đúp để mở. Tìm tệp GhiChuQuanTrong.txt đã xóa, nhấp chuột phải vào nó và chọn Restore. Tệp sẽ quay trở lại vị trí ban đầu.</li></ol>' },
+  2: { title: 'Bài 2: Khai thác dữ liệu và thông tin', content: '<h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">1. Đánh giá tình trạng dữ liệu hiện tại</h3><p style="margin-bottom: 0.75rem;">Trước khi tổ chức lại, dữ liệu cá nhân trên thiết bị của tôi có các vấn đề sau:</p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;"><strong>Phân tán nhiều nơi:</strong> File nằm rải rác ở Desktop, Downloads, Documents, gây khó tìm kiếm.</li><li style="margin-bottom: 0.5rem;"><strong>Không có hệ thống thư mục rõ ràng:</strong> Các file học tập, hình ảnh, video, tài liệu cá nhân để chung.</li><li style="margin-bottom: 0.5rem;"><strong>Tên file không nhất quán:</strong> Ví dụ: "file1.docx", "bai tap moi.docx", "IMG1234.jpg"</li><li style="margin-bottom: 0.5rem;"><strong>Trùng lặp dữ liệu:</strong> Một số file bị lưu nhiều bản khác nhau.</li><li style="margin-bottom: 0.5rem;"><strong>Khó tìm kiếm:</strong> Mất nhiều thời gian để tìm tài liệu cần thiết.</li><li style="margin-bottom: 0.5rem;"><strong>Chưa có sao lưu:</strong> Nguy cơ mất dữ liệu cao nếu thiết bị gặp sự cố.</li></ul><p style="margin-bottom: 1.5rem;"><em>Tổng kết: Dữ liệu chưa được tổ chức, thiếu hệ thống và không an toàn.</em></p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">2. Thiết kế hệ thống tổ chức dữ liệu</h3><p style="margin-bottom: 1.5rem;">(Hình minh họa)</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">3. Thực hiện tổ chức lại dữ liệu</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3.1. Các bước thực hiện</h4><ol style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Tạo hệ thống thư mục như thiết kế</li><li style="margin-bottom: 0.5rem;">Phân loại dữ liệu: File học tập → 01_HocTap, Ảnh → 03_HinhAnh, Video → 04_Video</li><li style="margin-bottom: 0.5rem;">Đổi tên file theo quy tắc</li><li style="margin-bottom: 0.5rem;">Xóa file trùng lặp</li><li style="margin-bottom: 0.5rem;">Sắp xếp lại theo thư mục con</li></ol><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3.2. Kết quả đạt được</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Đã tổ chức lại ~90% dữ liệu</li><li style="margin-bottom: 0.5rem;">Loại bỏ file trùng</li><li style="margin-bottom: 0.5rem;">Tìm kiếm nhanh hơn</li><li style="margin-bottom: 0.5rem;">Dữ liệu rõ ràng, khoa học</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3.3. Minh chứng</h4><p style="margin-bottom: 1.5rem;">Ảnh 1: Trước khi tổ chức (Desktop lộn xộn)<br/>Ảnh 2: Sau khi tổ chức (cấu trúc thư mục rõ ràng)</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">4. Chiến lược sao lưu dữ liệu</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">4.1. Phương pháp 1: Ổ cứng ngoài</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Sao lưu toàn bộ thư mục DATA vào ổ cứng ngoài</li><li style="margin-bottom: 0.5rem;">Tần suất: 1 lần/tuần</li><li style="margin-bottom: 0.5rem;"><strong>Ưu điểm:</strong> Dung lượng lớn, không cần internet</li><li style="margin-bottom: 0.5rem;"><strong>Nhược điểm:</strong> Có thể hỏng hoặc mất</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">4.2. Phương pháp 2: Lưu trữ đám mây</h4><p style="margin-bottom: 0.5rem;">Sử dụng dịch vụ như: Google Drive, OneDrive</p><p style="margin-bottom: 0.5rem;">Cách thực hiện: Đồng bộ thư mục quan trọng (HocTap, CaNhan) - Tự động cập nhật</p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;"><strong>Ưu điểm:</strong> Truy cập mọi lúc mọi nơi, an toàn hơn</li><li style="margin-bottom: 0.5rem;"><strong>Nhược điểm:</strong> Giới hạn dung lượng miễn phí</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">4.3. Chiến lược tổng hợp</h4><p style="margin-bottom: 1.5rem;">Áp dụng nguyên tắc 3-2-1: 3 bản dữ liệu - 2 loại lưu trữ khác nhau - 1 bản ở ngoài thiết bị chính</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">5. Báo cáo quá trình và kết quả</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">5.1. Khó khăn gặp phải</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Dữ liệu quá nhiều → mất thời gian phân loại</li><li style="margin-bottom: 0.5rem;">Khó quyết định giữ hay xóa file</li><li style="margin-bottom: 0.5rem;">Đổi tên file hàng loạt tốn công</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">5.2. Cách khắc phục</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Làm từng phần (chia nhỏ theo thư mục)</li><li style="margin-bottom: 0.5rem;">Giữ file quan trọng, xóa file dư thừa</li><li style="margin-bottom: 0.5rem;">Sử dụng phần mềm hỗ trợ đổi tên hàng loạt</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">5.3. Lợi ích đạt được</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Tìm file nhanh hơn (giảm 70% thời gian)</li><li style="margin-bottom: 0.5rem;">Dữ liệu gọn gàng, dễ quản lý</li><li style="margin-bottom: 0.5rem;">Tránh mất dữ liệu nhờ backup</li><li style="margin-bottom: 0.5rem;">Tăng hiệu quả học tập và làm việc</li></ul>' },
+  3: { title: 'Bài 3: Tổng quan về trí tuệ nhân tạo', content: '<div style="margin-bottom: 1rem;"><strong>Sinh viên:</strong> 25011196 – Nguyễn Thế Vũ Nguyên</div><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">Đề bài: Viết Prompt hiệu quả cho các tác vụ học tập</h3><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">1. Lựa chọn và Phân tích tác vụ học tập</h3><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 1rem;"><strong>Tác vụ 1: Tóm tắt tài liệu học thuật.</strong><br/>• Mục tiêu: Chắt lọc kiến thức cốt lõi từ các bài báo khoa học dài.<br/>• Thách thức: Giữ được độ chính xác thuật ngữ và logic của tác giả mà không bị lược bỏ quá nhiều chi tiết quan trọng.</li><li style="margin-bottom: 1rem;"><strong>Tác vụ 2: Giải thích khái niệm phức tạp</strong> (ví dụ: "Cơ chế đồng thuận Blockchain").<br/>• Mục tiêu: Chuyển đổi kiến thức trừu tượng thành ngôn ngữ dễ hiểu.<br/>• Thách thức: Tránh việc giải thích quá đơn giản làm sai lệch bản chất kỹ thuật.</li><li style="margin-bottom: 1rem;"><strong>Tác vụ 3: Tạo bộ câu hỏi ôn tập</strong> (Active Recall).<br/>• Mục tiêu: Tạo ra các câu hỏi kích thích tư duy bậc cao (phân tích, vận dụng).<br/>• Thách thức: AI thường tạo câu hỏi nhận biết (dễ), cần kỹ thuật để tạo câu hỏi tình huống.</li></ul><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">2. Xây dựng các phiên bản Prompt</h3><p style="margin-bottom: 0.75rem;"><strong>Tác vụ: Giải thích khái niệm "Sự lạm phát" (Kinh tế học)</strong></p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Phiên bản 1: Prompt Cơ bản</h4><p style="margin-bottom: 1rem; font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px;">"Hãy giải thích lạm phát là gì."</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Phiên bản 2: Prompt Cải tiến</h4><p style="margin-bottom: 1rem; font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px;">"Hãy giải thích khái niệm lạm phát cho một sinh viên năm nhất ngành kinh tế. Nội dung bao gồm định nghĩa, các nguyên nhân chính và ví dụ thực tế tại Việt Nam. Trình bày dưới dạng các mục tiêu điểm."</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Phiên bản 3: Prompt Nâng cao (Áp dụng Role-play + Chain-of-Thought)</h4><p style="margin-bottom: 1rem; font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px;">Vai trò: Bạn là một giáo sư kinh tế học có khả năng diễn đạt các khái niệm phức tạp một cách cực kỳ đơn giản (phương pháp Feynman). Nhiệm vụ: Giải thích cơ chế gây ra lạm phát do "Cầu kéo". Quy trình suy nghĩ: 1. Sử dụng một ví dụ thực tế về một ngôi chợ nhỏ. 2. Giải thích sự thay đổi giữa cung và cầu. 3. Kết luận về việc giá cả tăng lên như thế nào. Yêu cầu: Cuối bài, hãy đặt 1 câu hỏi phản biện để kiểm tra mức độ hiểu bài của tôi.</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">3. Thử nghiệm và So sánh Kết quả</h3><p style="margin-bottom: 1rem;"><em>(Ảnh minh họa các phiên bản prompt và kết quả)</em></p><table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;"><tr style="background: rgba(108, 99, 255, 0.1);"><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Tiêu chí</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Prompt Cơ bản</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Prompt Cải tiến</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Prompt Nâng cao</strong></th></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Độ chính xác</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Đúng nhưng chung chung.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Chi tiết, có cấu trúc.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Sâu sắc, có tính phân tích.</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Khả năng áp dụng</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Thấp, cần hỏi thêm nhiều.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Khá tốt cho việc đọc hiểu.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Xuất sắc, hỗ trợ tư duy phản biện.</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Ngôn ngữ</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Mang tính từ điển.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Mang tính giáo khoa.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Mang tính sư phạm, gần gũi.</td></tr></table><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">4. Phân tích hiệu quả Prompt</h3><p style="margin-bottom: 1rem;"><strong>Tại sao Prompt nâng cao hiệu quả nhất?</strong> Vì kỹ thuật Role Prompting giúp AI giới hạn không gian phản hồi (văn phong giáo sư), còn Chain-of-Thought ép AI phải tư duy qua từng bước logic trước khi đưa ra kết luận, tránh việc đưa ra câu trả lời hời hợt.</p><p style="margin-bottom: 1rem;"><strong>Mối liên hệ giữa cấu trúc và kết quả:</strong> Prompt càng có nhiều "ngữ cảnh" và "ràng buộc", AI càng ít bị "ảo giác" và bám sát mục tiêu học tập.</p>' },
+  4: { title: 'Bài 4: Giao tiếp và hợp tác trong môi trường số', content: ` <div style="margin-bottom: 1rem;"><strong>MSV:</strong> 25011196<br><strong>Họ và tên:</strong> Nguyễn Thế Vũ Nguyên</div><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">Đề bài:</h3><p>Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">1. Bối cảnh: Thiết kế "Cẩm nang Kỹ năng số cho sinh viên"</h3><p>Trong kỷ nguyên số, trí tuệ nhân tạo (AI) và chuyển đổi số đã không còn là những khái niệm xa vời mà đã trở thành động lực chính thay đổi diện mạo thế giới. Đối với sinh viên, khả năng xử lý thông tin và làm việc trên nền tảng số không chỉ đơn thuần là yêu cầu về kỹ thuật, mà còn là kỹ năng sinh tồn thiết yếu để thích nghi với môi trường hiện đại.</p><p>Tuy nhiên, việc chuyển dịch từ phương thức học tập truyền thống sang môi trường số hóa cũng đặt ra không ít thách thức. Bên cạnh sự tiện lợi về thời gian và không gian, người học vẫn phải đối mặt với các rào cản như:</p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Sự phân tán khả năng tập trung.</li><li style="margin-bottom: 0.5rem;">Khó khăn trong việc duy trì kết nối nhóm mật thiết.</li><li style="margin-bottom: 0.5rem;">Áp lực quản lý khối lượng dữ liệu khổng lồ một cách khoa học.</li></ul><p>Bài tập này sẽ phân tích trải nghiệm thực tế của cá nhân em thông qua việc ứng dụng bộ công cụ hỗ trợ học tập và làm việc nhóm, bao gồm:</p><ol style="padding-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;"><strong>Trello:</strong> Công cụ quản lý dự án</li><li style="margin-bottom: 0.5rem;"><strong>Google Docs:</strong> Công cụ soạn thảo tài liệu cộng tác</li><li style="margin-bottom: 0.5rem;"><strong>Google Drive:</strong> Công cụ lưu trữ và chia sẻ tệp</li><li style="margin-bottom: 0.5rem;"><strong>Discord:</strong> Công cụ giao tiếp nhóm</li></ol><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">2. Kỹ năng thiết lập & sử dụng công cụ</h3><p><strong>Hành động cụ thể:</strong></p><p><strong>Thiết lập Profile:</strong></p><p><strong>Trello</strong> (Công cụ quản lý dự án)</p><p><strong>Google Docs</strong> (Công cụ soạn thảo tài liệu cộng tác)</p><p><strong>Google Drive</strong> (Công cụ lưu trữ và quản lý tệp)</p><p><strong>Discord</strong> (Công cụ giao tiếp nhóm)</p><p><strong>Sử dụng công cụ:</strong></p><p><strong>Trello:</strong></p><p>Trello đóng vai trò là "bản đồ điều hướng" giúp nhóm em hiện thực hóa các mục tiêu học tập một cách khoa học. Thông qua giao diện trực quan theo phương pháp Kanban, mọi thành viên (Nguyên, Xuân Phúc, Quỳnh Anh, Nhi) đều có không gian riêng để theo dõi nhiệm vụ cụ thể từ khâu tìm kiếm nội dung, lấy ví dụ cho đến thiết kế slide và tổng hợp bài.</p><p>Điểm ưu việt nhất mà em nhận thấy là khả năng minh bạch hóa tiến độ: chỉ cần nhìn vào bảng màu và các thẻ, nhóm có thể biết ngay ai đang làm gì và deadline cụ thể là khi nào (vd: từ ngày 6/4 đến 18/4). Ngoài ra, tính năng chế độ xem lịch trong hình ảnh thứ hai giúp em có cái nhìn tổng thể về dòng thời gian của dự án, từ đó tránh được tình trạng chồng chéo công việc hoặc dồn ứ sát ngày nộp. Việc tích hợp các danh sách kiểm tra (checklist) và đính kèm tài liệu ngay trên thẻ giúp giảm thiểu tối đa thời gian tìm kiếm, biến Trello thành một trung tâm điều phối thông tin cực kỳ hiệu quả cho nhóm.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Google Docs</h4><p>Google Docs đã chứng minh sức mạnh của một công cụ soạn thảo cộng tác theo thời gian thực. Điểm ấn tượng nhất chính là khả năng đóng góp nội dung trực tiếp và hệ thống tương tác minh bạch giữa các thành viên.</p><p>Qua hình ảnh, có thể thấy em và Nhi Ngọc đã liên tục trao đổi để nâng cao chất lượng bài viết. Cụ thể, khi bàn về vai trò của AI, em đã đề xuất bổ sung trích dẫn từ báo cáo của UNESCO (2023) thay vì chỉ dùng cụm từ chung chung "theo các chuyên gia", giúp bài viết tăng tính học thuật và độ tin cậy cho bài viết. Việc xử lý các góp ý về cách diễn đạt hay số liệu ngay trên lề tài liệu giúp luồng công việc luôn mạch lạc, đảm bảo bản thảo cuối cùng đạt được sự thống nhất cao nhất về cả nội dung lẫn hình thức mà không cần tốn thời gian trao đổi qua nhiều kênh trung gian khác.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Google Drive</h4><p>Nếu Trello là "bản đồ dự án" thì Google Drive chính là "kho tri thức" giúp nhóm em lưu trữ và tổ chức dữ liệu một cách hệ thống.</p><p>Qua hình ảnh, có thể thấy em đã phân loại dữ liệu thành các thư mục con rất khoa học như: 1. Kế hoạch, 2. Nội dung và 3. Tài liệu tham khảo. Cách đặt tên thư mục đánh số thứ tự giúp việc truy xuất thông tin trở nên nhanh chóng, giảm thiểu tối đa tình trạng thất lạc tài liệu thường gặp khi làm việc nhóm.</p><p>Bên cạnh đó, việc tích hợp Google Docs trực tiếp trong hệ sinh thái Drive đã tạo ra một môi trường cộng tác theo thời gian thực vô cùng hiệu quả.</p><p>Trong tệp "PHÂN CÔNG NHIỆM VỤ", nhóm đã xây dựng bảng theo dõi chi tiết gồm các cột: Thành viên, Nội dung chính, Hạn nộp và Tình trạng hoàn thành. Điều này không chỉ giúp mỗi cá nhân nắm vững yêu cầu (như kỹ năng Microsoft Word của em hay kỹ năng sử dụng AI của Nhi) mà còn tạo ra sự tự giác cao thông qua các dấu tích hoàn thành.</p><p>Đặc biệt, quy tắc đặt tên file chung theo cú pháp "TENSINHVIEN_NOIDUNG" được nhắc nhở ngay đầu tài liệu cho thấy sự chuyên nghiệp trong việc quản lý dữ liệu số, giúp việc tổng hợp bài cuối cùng trở nên thuận tiện và nhất quán.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Discord</h4><p>Cuối cùng, để giải quyết bài toán về sự kết nối và tương tác tức thời, nhóm em đã lựa chọn Discord làm nền tảng giao tiếp chính. Khác với các ứng dụng nhắn tin thông thường, Discord cho phép phân loại luồng thông tin cực kỳ chuyên nghiệp thông qua hệ thống kênh (channels) riêng biệt như: các kênh chat chung, trợ giúp làm bài tập về nhà và các kênh thoại như Phòng học 1, 2 để thảo luận trực tiếp.</p><p>Qua trải nghiệm thực tế, Discord đã giúp nhóm vượt qua rào cản về khoảng cách không gian một cách hiệu quả.</p><p>Thảo luận: Các thành viên Nhi, Quỳnh Anh, Xuân Phúc và em đã cùng nhau thảo luận sôi nổi để chốt đề tài "Kỹ năng số cho sinh viên" – một chủ đề mang tính thời đại và sát thực tế.</p><p>Tính năng bình chọn: Nhóm đã ứng dụng tính năng vote để phân công nhiệm vụ một cách công bằng và minh bạch. Việc mỗi người tự chọn phần việc phù hợp với thế mạnh của mình (như kỹ năng Word, sử dụng AI, hay tư duy phản biện) giúp tăng tối đa hiệu suất làm việc.</p><p>Môi trường tích cực: Việc sử dụng các biểu tượng cảm xúc (emoji) và hình ảnh vui nhộn trong quá trình trò chuyện không chỉ giúp giảm bớt áp lực bài vở mà còn xây dựng một văn hóa nhóm gắn kết, thân thiện – điều mà các phương thức học tập truyền thống đôi khi khó làm được trong môi trường số.</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">3. Ưu điểm và nhược điểm</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Trello (Quản lý dự án)</h4><p><strong>Ưu điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Trực quan hóa dữ liệu: Giao diện thẻ giúp nắm bắt ngay lập tức ai đang làm gì, việc nào đã xong, việc nào chưa.</li><li style="margin-bottom: 0.5rem;">Dễ sử dụng: Thao tác kéo-thả đơn giản, không cần kiến thức kỹ thuật phức tạp.</li><li style="margin-bottom: 0.5rem;">Theo dõi deadline: Chế độ Calendar giúp sinh viên kiểm soát thời gian nộp bài hiệu quả.</li></ul><p><strong>Nhược điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Hạn chế cho dự án lớn: Khi số lượng thẻ quá nhiều, bảng dễ bị rối và khó nhìn tổng thể.</li><li style="margin-bottom: 0.5rem;">Thiếu các công cụ sâu: Không có sẵn tính năng theo dõi thời gian (time-tracking) hoặc biểu đồ chi tiết trừ khi dùng tiện ích bổ sung.</li><li style="margin-bottom: 0.5rem;">Phụ thuộc vào sự tự giác: thành viên quên cập nhật trạng thái thẻ, bảng sẽ không phản ánh đúng thực tế tiến độ nhóm.</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Google Docs (Quản lý tài liệu)</h4><p><strong>Ưu điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Cộng tác thời gian thực: Nhiều người cùng viết bài đồng thời, thấy được con trỏ chuột của nhau đang soạn thảo ở đâu.</li><li style="margin-bottom: 0.5rem;">Tính năng nhận xét: Dễ dàng góp ý ngay tại đoạn văn cần sửa mà không làm thay đổi nội dung gốc.</li><li style="margin-bottom: 0.5rem;">Lịch sử: Có thể khôi phục lại nội dung cũ nếu lỡ tay xóa nhầm.</li></ul><p><strong>Nhược điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Công cụ trình bày cơ bản: Không có đầy đủ các tính năng dàn trang và định dạng chuyên sâu như bản cài đặt Microsoft Word offline.</li><li style="margin-bottom: 0.5rem;">Dễ gây mất tập trung: Khi có quá nhiều người cùng chỉnh sửa, màn hình sẽ bị nhảy liên tục.</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Google Drive (Lưu trữ dữ liệu)</h4><p><strong>Ưu điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Khả năng lưu trữ lớn: Cung cấp dung lượng miễn phí đủ dùng cho hầu hết các bài tập lớn của sinh viên.</li><li style="margin-bottom: 0.5rem;">Tính đồng bộ: Truy cập được mọi lúc, mọi nơi trên mọi thiết bị (điện thoại, máy tính).</li><li style="margin-bottom: 0.5rem;">Phân quyền linh hoạt: Dễ dàng kiểm soát ai được xem, ai được sửa tài liệu.</li></ul><p><strong>Nhược điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Quản lý file dễ lộn xộn: Nếu không có quy tắc đặt tên, kho dữ liệu rất dễ trở lên lộn xộn thông tin.</li><li style="margin-bottom: 0.5rem;">Phụ thuộc vào Internet: Tốc độ tải tệp lên/xuống phụ thuộc hoàn toàn vào chất lượng mạng.</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Discord (Giao tiếp nhóm)</h4><p><strong>Ưu điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Chia kênh thông minh: Tách biệt luồng thảo luận (Kênh chat, Kênh thoại, Kênh tài liệu) giúp thông tin không bị trôi mất.</li><li style="margin-bottom: 0.5rem;">Hỗ trợ hội họp tốt: Kênh Voice/Video cực kỳ ổn định, có tính năng chia sẻ màn hình để giảng giải cho nhau.</li><li style="margin-bottom: 0.5rem;">Văn hóa nhóm: Tạo không khí làm việc thoải mái, trẻ trung thông qua các bot giải trí và emoji.</li></ul><p><strong>Nhược điểm:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Dễ bị "ngộp" thông báo: Nếu không tắt thông báo các kênh không cần thiết, người dùng dễ bị xao nhãng.</li><li style="margin-bottom: 0.5rem;">Quyền riêng tư: Một số sinh viên mới dùng có thể thấy giao diện phức tạp hơn so với Zalo hay Messenger.</li></ul><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">4. Thách thức và giải pháp khi làm dự án</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Thách thức 1: Rào cản về khả năng tập trung và quản lý thời gian</h4><p>Trong môi trường học tập trực tuyến, sinh viên thường xuyên đối mặt với sự xao nhãng từ không gian xung quanh hoặc các ứng dụng giải trí, dẫn đến tình trạng trì trệ và chậm trễ tiến độ (deadline).</p><p><strong>Giải pháp:</strong> Ứng dụng Trello làm công cụ điều phối trung tâm. Bằng cách chia nhỏ dự án thành các thẻ nhiệm vụ với thời hạn cụ thể cho từng cá nhân (như em, Phúc, Quỳnh Anh, Nhi), nhóm đã tạo ra một lộ trình trực quan. Việc theo dõi tiến độ công việc hàng ngày trên bảng Kanban tạo ra "áp lực tích cực", giúp mỗi thành viên tự giác hoàn thành phần việc đúng hạn.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Thách thức 2: Sự hạn chế trong tương tác và kết nối nhóm</h4><p>Việc thiếu giao tiếp trực tiếp dễ dẫn đến hiểu lầm, cảm giác cô lập hoặc tình trạng một số thành viên thụ động, gây ảnh hưởng đến hiệu quả chung của cả nhóm.</p><p><strong>Giải pháp:</strong> Tối ưu hóa hệ thống kênh của Discord và tính năng cộng tác trên Google Docs.</p><p><strong>Discord:</strong> Phân loại các kênh thảo luận chuyên biệt giúp luồng thông tin mạch lạc. Việc khuyến khích thảo luận công khai và bình chọn ý kiến trước khi chốt đề tài đã tạo nên sự dân chủ và gắn kết.</p><p><strong>Google Docs:</strong> Sử dụng tính năng bình luận để phản hồi trực tiếp trên nội dung soạn thảo. Việc tương tác tức thì giúp chỉnh sửa lỗi sai ngay lập tức, duy trì sự kết nối liên tục mà không cần họp mặt trực tiếp.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">Thách thức 3: Khó khăn trong quản lý dữ liệu và thất lạc thông tin</h4><p>Khi làm việc trực tuyến, tài liệu thường bị phân tán qua nhiều nền tảng (Zalo, Messenger, Email...), gây khó khăn cho việc kiểm soát, rà soát và tổng hợp báo cáo cuối cùng.</p><p><strong>Giải pháp:</strong> Thiết lập hệ thống lưu trữ tập trung trên Google Drive với các quy tắc quản trị dữ liệu khoa học:</p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Cấu trúc thư mục: Phân loại rõ ràng thành 3 thư mục riêng biệt: 1. Kế hoạch, 2. Nội dung, 3. Tài liệu tham khảo, giúp việc truy xuất thông tin nhanh chóng và chuyên nghiệp.</li><li style="margin-bottom: 0.5rem;">Quy tắc đặt tên: Thống nhất cú pháp Tensinhvien_Noidung (Ví dụ: NguyenTheVuNguyen_KynangWord). Thói quen này không chỉ giúp trưởng nhóm dễ dàng tổng hợp mà còn hình thành tư duy làm việc ngăn nắp trong môi trường số.</li></ul>
+  ` },
+  5: { title: 'Bài 5: Sáng tạo nội dung số', content: `<div style="margin-bottom: 1rem;"><strong>Họ và tên:</strong> Nguyễn Thế Vũ Nguyên<br><strong>MSV:</strong> 25011196</div><h2 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:1rem;">BÁO CÁO DỰ ÁN SÁNG TẠO NỘI DUNG SỐ CÓ SỰ HỖ TRỢ CỦA AI</h2><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">Tên dự án:</h3><p style="margin-bottom:1.5rem;">Thiết kế Infographic tuyên truyền: "Hiểu đúng về Rác thải điện tử (E-waste)"</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">I. Giới thiệu dự án</h3><p><strong>Loại hình nội dung:</strong> Infographic (Đồ họa thông tin) kết hợp bài đăng mạng xã hội.</p><p><strong>Mục tiêu:</strong> Nâng cao nhận thức của giới trẻ về tác hại của rác thải điện tử và cách xử lý đúng cách.</p><p style="margin-bottom:1rem;"><strong>Công cụ AI đã sử dụng (3 công cụ):</strong></p><ol style="padding-left: 2rem; margin-bottom: 1.5rem;"><li style="margin-bottom: 0.5rem;"><strong>Google Gemini</strong> (AI tạo văn bản): Nghiên cứu số liệu, lên dàn ý và viết nội dung.</li><li style="margin-bottom: 0.5rem;"><strong>Nano Banana</strong> (AI tạo hình ảnh): Tạo các hình ảnh minh họa mang tính ẩn dụ về rác thải công nghệ.</li><li style="margin-bottom: 0.5rem;"><strong>Canva AI / Magic Design</strong> (AI hỗ trợ thiết kế): Bố cục, chọn bảng màu và tạo khung thiết kế tự động.</li></ol><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">II. Quá trình sử dụng AI và Tích hợp sáng tạo</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">1. Công cụ 1: Google Gemini (Nghiên cứu & Lên nội dung)</h4><p><strong>Lần 1 (Tìm kiếm ý tưởng chung):</strong></p><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Prompt: "Hãy đóng vai một chuyên gia môi trường. Lên cho tôi một dàn ý gồm 4 phần chính cho một infographic về Rác thải điện tử (E-waste) hướng tới đối tượng là sinh viên đại học. Giọng văn hiện đại, có số liệu thực tế."</p><p><strong>Kết quả AI:</strong> Gemini đưa ra dàn ý khá tốt nhưng số liệu còn hơi cũ (từ 2019) và văn phong hơi cứng.</p><p><strong>Sự can thiệp của tôi:</strong> Yêu cầu Gemini cập nhật số liệu mới nhất (Global E-waste Monitor 2026) và rút gọn các tiêu đề cho "catchy" (thu hút) hơn.</p><p style="margin-top: 1rem; margin-bottom: 1rem;"><strong>Lần 2 (Tinh chỉnh nội dung):</strong></p><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Prompt: "Từ phần 2 của dàn ý trên, hãy viết 3 bullet point ngắn gọn (dưới 15 chữ/bullet) về tác hại của E-waste. Sử dụng từ ngữ gây ấn tượng mạnh."</p><p><strong>Kết quả AI:</strong></p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Sát thủ vô hình: Kim loại nặng ngấm độc, tàn phá hệ thần kinh và nội tạng.</li><li style="margin-bottom: 0.5rem;">Bom nổ chậm: Rò rỉ hóa chất độc hại, "bức tử" nguồn nước và đất đai.</li><li style="margin-bottom: 0.5rem;">Ô nhiễm kép: Đốt rác điện tử giải phóng khí độc, đầu độc bầu không khí.</li></ul><p><strong>Đóng góp cá nhân:</strong> Tôi giữ lại ý tưởng nhưng viết lại cho vần điệu hơn để đưa vào Infographic: "Đầu độc đất đai - Bốc hơi khí độc - Bóp nghẹt nguồn nước."</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">2. Công cụ 2: Nano Banana (Tạo hình ảnh minh họa)</h4><p><strong>Lần 1 (Tạo ảnh chính cho Infographic):</strong></p><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Prompt: "Create an isometric 3D illustration of a globe half covered in green nature and half covered in old electronic devices (keyboards, monitors, phones). Clean white background, modern vector style, bright colors."</p><p><strong>Kết quả AI:</strong> Nano Banana tạo ra hình ảnh rất đẹp, đúng phong cách 3D isometric.</p><p style="margin-top: 1rem; margin-bottom: 1rem;"><strong>Lần 2 (Sửa lỗi):</strong></p><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Prompt: "Regenerate the same concept, but ensure there is NO text on the electronic devices. Make the contrast between the green nature and the grey electronics more striking."</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3. Công cụ 3: Canva AI (Bố cục & Thiết kế)</h4><p><strong>Quá trình:</strong> Tôi sử dụng tính năng "Magic Design" của Canva.</p><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Prompt trong Canva: "Infographic about E-waste, modern style, green and dark grey colors."</p><p><strong>Kết quả AI:</strong> Canva AI gợi ý 4 template.</p><p><strong>Đóng góp cá nhân:</strong> AI của Canva chỉ làm được phần khung (chiếm khoảng 40% công việc). Hơn 60% công việc còn lại là của tôi:</p><ul style="margin-left: 2rem; margin-bottom: 1.5rem;"><li style="margin-bottom: 0.5rem;">Thay thế các placeholder text bằng nội dung tiếng Việt đã tinh chỉnh từ Gemini.</li><li style="margin-bottom: 0.5rem;">Chèn hình ảnh 3D đã làm sạch từ DALL-E vào trung tâm.</li><li style="margin-bottom: 0.5rem;">Tự điều chỉnh font chữ để đảm bảo không bị lỗi font tiếng Việt.</li></ul><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">III. So sánh và Phân tích hiệu quả của các công cụ AI</h3><p>Trong quá trình thực hiện dự án, 3 công cụ AI thể hiện những ưu/nhược điểm rõ rệt, thay đổi đáng kể quy trình làm việc thông thường:</p><table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 13px;"><tr style="background: rgba(108, 99, 255, 0.1);"><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Tiêu chí</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Google Gemini</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Nano Banana</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.75rem; text-align: left;"><strong>Canva AI</strong></th></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;"><strong>Phần làm tốt nhất</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Nghiên cứu tổng quan nhanh, cấu trúc thông tin logic, phá vỡ "trang giấy trắng" ban đầu.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Trực quan hóa những ý tưởng trừu tượng cực nhanh. Phong cách 3D/Vector rất ấn tượng.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Gợi ý bố cục layout hợp lý, tự động chọn bảng màu phù hợp với chủ đề nhập vào.</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;"><strong>Hạn chế</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Đôi khi đưa số liệu không có nguồn kiểm chứng; văn phong bị "rập khuôn".</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Khó kiểm soát chi tiết nhỏ (lỗi gen ra chữ vô nghĩa, sai tỷ lệ vật thể). Khó giữ tính nhất quán giữa các hình ảnh.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Magic Design còn hạn chế với tiếng Việt (thường xuyên gợi ý template font bị lỗi).</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.75rem;"><strong>Đánh giá chung</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Tiết kiệm 70% thời gian research, nhưng tốn thời gian fact-check.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Thay thế việc mua ảnh stock, nhưng cần kỹ năng viết prompt và chỉnh sửa hậu kỳ tốt.</td><td style="border: 1px solid #e5e7eb; padding: 0.75rem;">Chỉ đóng vai trò trợ lý khởi động, người dùng vẫn phải có tư duy thẩm mỹ để hoàn thiện.</td></tr></table><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">IV. Phân tích vai trò của AI và Các vấn đề đạo đức</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">1. Sự thay đổi trong quy trình sáng tạo:</h4><p>Sự xuất hiện của AI tạo sinh đã chuyển đổi quy trình sáng tạo của tôi từ "Tạo ra từ con số 0" (Creation from scratch) sang "Định hướng và Tinh chỉnh" (Curation & Refinement). Thay vì dành hàng giờ để tìm kiếm từng icon hay bóp nặn từng dòng chữ mở đầu, tôi đóng vai trò là một "Đạo diễn" (Art Director). AI làm nhiệm vụ thi công những bản nháp thô, và tôi sử dụng tư duy phản biện, sự đồng cảm và kinh nghiệm cá nhân để cắt gọt, lắp ghép chúng thành một tác phẩm có hồn. Sản phẩm cuối cùng là sự kết hợp hoàn hảo: AI lo phần tốc độ và quy mô (chiếm khoảng 40% khối lượng), con người lo phần cảm xúc, logic thực tế và tính chính xác (chiếm 60% chất lượng).</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">2. Các vấn đề đạo đức cần cân nhắc:</h4><p>Trong quá trình sử dụng AI cho bài tập này, tôi nhận thấy có 3 vấn đề đạo đức lớn mà một người sáng tạo nội dung phải đối mặt:</p><p><strong>Vấn đề Bản quyền (Copyright):</strong> Hình ảnh do DALL-E tạo ra được học (train) từ hàng triệu tác phẩm của nghệ sĩ khác mà chưa được sự đồng ý. Do đó, việc mang hình ảnh này đi thương mại hóa (nếu có) sẽ dấy lên những tranh cãi về mặt pháp lý và đạo đức.</p><p><strong>Tính Minh bạch (Transparency):</strong> Người xem có quyền được biết nội dung họ đang tiêu thụ có sự can thiệp của máy móc hay không. Trong sản phẩm cuối cùng của mình, tôi đã thêm một dòng nhỏ ở góc dưới: "Hình ảnh và dữ liệu được hỗ trợ tổng hợp bởi công cụ AI, nội dung được biên tập bởi con người". Đây là một nguyên tắc đạo đức cơ bản trong báo chí và truyền thông hiện đại.</p><p><strong>Rủi ro thiên kiến và sai lệch thông tin (Bias & Hallucinations):</strong> AI tạo văn bản thường tự tin đưa ra thông tin sai lệch (như khi Gemini đưa ra số liệu rác thải cũ hoặc không tồn tại). Nếu người sáng tạo lười biếng, phụ thuộc 100% vào AI mà không kiểm chứng chéo (cross-check) với các nguồn như WHO hay Liên Hợp Quốc, họ sẽ trở thành người tiếp tay phát tán tin giả (Fake News) đến cộng đồng.</p>
+  ` },
+  6: { title: 'Bài 6: An toàn và liêm chính học thuật trong môi trường số', content: `<h2 style="font-size:18px;font-weight:900;color:var(--c1);margin-bottom:1rem;">BÀI TẬP 4: SỬ DỤNG AI CÓ TRÁCH NHIỆM TRONG HỌC TẬP VÀ NGHIÊN CỨU</h2><div style="margin-bottom: 1rem;"><strong>Họ và tên:</strong> Nguyễn Thế Vũ Nguyên<br><strong>MSV:</strong> 25011196<br><strong>Lớp:</strong> KH.N5<br><strong>Trường:</strong> Đại học Giáo dục - Đại học Quốc gia Hà Nội</div><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">I. NGHIÊN CỨU CHÍNH SÁCH CỦA TRƯỜNG ĐẠI HỌC</h3><p>Trường Đại học Giáo dục (UEd) là một trường thành viên trực thuộc Đại học Quốc gia Hà Nội (VNU). Hiện tại, UEd chưa ban hành một văn bản chính sách riêng, độc lập về việc sử dụng trí tuệ nhân tạo (AI) trong học tập và nghiên cứu. Tuy nhiên, điều này không có nghĩa là không có quy định. Ngược lại, toàn bộ hệ thống chính sách, định hướng chiến lược và các văn bản pháp quy từ cấp ĐHQGHN đã tạo ra một khuôn khổ pháp lý và đạo đức thống nhất, ràng buộc đối với tất cả sinh viên, giảng viên các trường thành viên, trong đó có UEd.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">1. Chính sách và định hướng chính thức từ Đại học Quốc gia Hà Nội (VNU)</h4><p><strong>Quyết định 3499/QĐ-ĐHQGHN (ngày 7/7/2025):</strong> Giám đốc ĐHQGHN quyết định đưa học phần "Nhập môn công nghệ số và ứng dụng trí tuệ nhân tạo" (VNU1001, 3 tín chỉ) vào giảng dạy bắt buộc cho toàn bộ sinh viên đại học chính quy từ khóa 2025. Nội dung học phần nhấn mạnh:</p><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;">Sử dụng AI có trách nhiệm, hiệu quả và an toàn.</li><li style="margin-bottom: 0.5rem;">Đảm bảo liêm chính học thuật, giải quyết các vấn đề đạo đức.</li><li style="margin-bottom: 0.5rem;">Phát huy tư duy độc lập, sáng tạo, không lệ thuộc vào AI.</li></ul><p><strong>Khung năng lực trí tuệ nhân tạo dành cho sinh viên:</strong> VNU xác định năng lực cốt lõi là "sử dụng và đồng sáng tạo AI một cách có trách nhiệm, hiệu quả và đạo đức".</p><p><strong>Tuyên bố của lãnh đạo Trường Đại học Giáo dục:</strong> PGS.TS Trần Thành Nam, Phó Hiệu trưởng, nhấn mạnh: "Chính sách về AI không nên đi theo hướng cấm đoán tuyệt đối, nhưng bắt buộc phải thiết lập ranh giới rõ ràng và gắn liền với giáo dục trách nhiệm sử dụng."</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">2. So sánh với chính sách của các trường đại học khác</h4><table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 12px;"><tr style="background: rgba(108, 99, 255, 0.1);"><th style="border: 1px solid #e5e7eb; padding: 0.5rem; text-align: left;"><strong>Tiêu chí</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.5rem; text-align: left;"><strong>VNU - UEd</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.5rem; text-align: left;"><strong>UEH</strong></th><th style="border: 1px solid #e5e7eb; padding: 0.5rem; text-align: left;"><strong>VinUni</strong></th></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Hình thức văn bản</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Học phần bắt buộc + Khung năng lực</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Quy định riêng</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Hướng dẫn bổ sung chính sách</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Thời điểm ban hành</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">2025</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">2025</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">2024</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Trọng tâm chính</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Trang bị năng lực + đạo đức</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Xử lý vi phạm</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Minh bạch và linh hoạt</td></tr></table><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">II. THỰC HIỆN NHIỆM VỤ HỌC TẬP VỚI SỰ HỖ TRỢ CỦA AI</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">1. Nhiệm vụ được chọn</h4><p>Viết một đoạn tổng quan tài liệu học thuật (khoảng 250-300 từ) về chủ đề: "Tác động của trí tuệ nhân tạo tạo sinh (Generative AI) đến liêm chính học thuật trong giáo dục đại học".</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">2. Ghi lại các Prompt và đầu ra của AI</h4><p>Sử dụng ChatGPT (GPT-4) qua 3 phiên làm việc liên tiếp:</p><table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 12px;"><tr style="background: rgba(108, 99, 255, 0.1);"><th style="border: 1px solid #e5e7eb; padding: 0.5rem;">Lần</th><th style="border: 1px solid #e5e7eb; padding: 0.5rem;">Prompt</th><th style="border: 1px solid #e5e7eb; padding: 0.5rem;">Đánh giá</th></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Lần 1</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">"Viết đoạn văn về generative AI và liêm chính học thuật (250 từ)"</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Chung chung, thiếu phân tích, không dẫn chứng</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Lần 2</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Yêu cầu phân tích chi tiết 3 vấn đề cụ thể với dẫn chứng</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Cải thiện nhưng dẫn chứng còn chung chung</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Lần 3</strong></td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Tích hợp chính sách VNU1001 và trích dẫn thực tế</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Chất lượng cao, sẵn sàng sử dụng</td></tr></table><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3. Cách tôi đánh giá, chỉnh sửa và tích hợp</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;"><strong>Đánh giá lần 1:</strong> Không đạt yêu cầu, không sử dụng. Cải tiến prompt.</li><li style="margin-bottom: 0.5rem;"><strong>Đánh giá lần 2:</strong> Thiếu thực tiễn, không thể đứng độc lập.</li><li style="margin-bottom: 0.5rem;"><strong>Đánh giá lần 3:</strong> Chất lượng tốt. Kiểm tra từng câu, so sánh với chính sách gốc, kiểm tra trích dẫn, sửa giọng văn, thêm nội dung cá nhân.</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">4. Sản phẩm cuối cùng</h4><p style="font-style: italic; padding: 0.75rem; background: rgba(108, 99, 255, 0.08); border-radius: 8px; margin-bottom: 1rem;">Trong bối cảnh giáo dục đại học, sự trỗi dậy của các mô hình trí tuệ nhân tạo tạo sinh (generative AI) như ChatGPT đã đặt ra những thách thức chưa từng có đối với liêm chính học thuật, đồng thời buộc các cơ sở đào tạo phải xác định lại ranh giới giữa hỗ trợ hợp lý và gian lận. Thách thức thứ nhất nằm ở sự mờ nhạt của ranh giới này: khi AI có thể tạo ra một bài luận hoàn chỉnh chỉ trong vài giây, việc phân biệt trở nên vô cùng khó khăn. Thứ hai, vấn đề quyền tác giả nảy sinh khi các sản phẩm do AI tạo ra không có tác giả là con người. Thứ ba, việc lạm dụng AI có thể làm suy giảm các kỹ năng nền tảng như tư duy phản biện. Trước đó, ĐHQGHN đã có những bước đi chủ động khi đưa học phần VNU1001 vào giảng dạy bắt buộc từ 2025, nhấn mạnh yêu cầu minh bạch, trách nhiệm và sử dụng AI như công cụ hỗ trợ, không thay thế tư duy con người.</p><p><strong>Trích dẫn việc sử dụng AI:</strong> Đoạn tổng quan này được hỗ trợ bởi ChatGPT (GPT-4) qua 3 lượt prompt. Tôi tự mình kiểm tra, chỉnh sửa văn phong, bổ sung trích dẫn chính xác. AI đóng vai trò hỗ trợ, không thay thế phân tích và đánh giá của tôi.</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">III. PHÂN TÍCH CÁC VẤN ĐỀ ĐẠO ĐỨC</h3><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">1. Ranh giới giữa hỗ trợ hợp lý và gian lận</h4><p><strong>Hỗ trợ hợp lý:</strong> Sử dụng AI để brainstorm, kiểm tra ngữ pháp, tóm tắt bài báo với vai trò trung tâm của người học. Tôi công khai minh bạch việc sử dụng.</p><p><strong>Gian lận học thuật:</strong> Nộp sản phẩm do AI tạo ra mà không thừa nhận, hoặc để AI thực hiện toàn bộ nhiệm vụ đánh giá năng lực cá nhân.</p><p><strong>Ranh giới mờ nhạt:</strong> Chính sách VNU giải quyết bằng nguyên tắc minh bạch: nếu sinh viên tự tin giải thích quy trình và chịu trách nhiệm về từng câu chữ, việc sử dụng AI được chấp nhận.</p><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">2. Quyền sở hữu trí tuệ và trích dẫn</h4><ul style="margin-left: 2rem; margin-bottom: 1rem;"><li style="margin-bottom: 0.5rem;"><strong>AI không phải tác giả:</strong> AI không thể chịu trách nhiệm pháp lý hay đạo đức, do đó không được công nhận là tác giả.</li><li style="margin-bottom: 0.5rem;"><strong>Cách trích dẫn đúng:</strong> Tuyên bố minh bạch mô tả công cụ, mục đích, phạm vi và mức độ can thiệp.</li><li style="margin-bottom: 0.5rem;"><strong>Rủi ro đạo văn:</strong> Không trích dẫn AI có thể bị buộc tội đạo văn.</li></ul><h4 style="margin-top: 1rem; margin-bottom: 0.75rem; color: var(--c1);">3. Tác động đến quá trình học tập</h4><p>Lạm dụng AI dẫn đến "hội chứng ăn sẵn" – sinh viên quen với câu trả lời mà không suy nghĩ, làm teo các kỹ năng tư duy bậc cao. Sử dụng đúng cách, AI có thể giúp học nhanh hơn và sâu hơn, đóng vai trò "người bạn đồng hành" để thảo luận ý tưởng.</p><h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--c1);">IV. BỘ 6 NGUYÊN TẮC SỬ DỤNG AI CÓ TRÁCH NHIỆM</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 12px;"><tr style="background: rgba(108, 99, 255, 0.1);"><th style="border: 1px solid #e5e7eb; padding: 0.5rem; width: 5%;">STT</th><th style="border: 1px solid #e5e7eb; padding: 0.5rem;">Nguyên tắc</th><th style="border: 1px solid #e5e7eb; padding: 0.5rem;">Liên kết với chính sách</th></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">1</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Minh bạch tuyệt đối:</strong> Công khai công cụ, mục đích, phạm vi sử dụng AI ở phần trích dẫn.</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">VNU1001; ranh giới hỗ trợ-gian lận</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">2</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>AI là công cụ:</strong> Không để AI thay thế vai trò hình thành luận điểm hay phân tích dữ liệu.</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Tuyên bố PGS.TS Trần Thành Nam</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">3</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Kiểm định bắt buộc:</strong> Kiểm tra mọi nội dung AI về tính chính xác, logic, cảnh giác "ảo giác".</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">VNU1001 về đánh giá AI</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">4</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Tôn trọng sở hữu trí tuệ:</strong> Không tạo nội dung vi phạm bản quyền, không coi sản phẩm AI là của riêng mình.</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Sở hữu trí tuệ; liêm chính học thuật</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">5</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Không dùng cho đánh giá năng lực:</strong> Không sử dụng AI cho kiểm tra, bài thi, bài tập độc lập.</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Ranh giới hỗ trợ-gian lận</td></tr><tr><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">6</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;"><strong>Học tập liên tục:</strong> Tích cực tham gia VNU1001 và các khóa bồi dưỡng về AI.</td><td style="border: 1px solid #e5e7eb; padding: 0.5rem;">Chiến lược VNU; trách nhiệm sinh viên</td></tr></table>
+  ` }
+};
+
+function openProject(num) {
+  const grid = document.getElementById('projectsGrid');
+  const detail = document.getElementById('projectDetail');
+  const data = projectData[num];
+  
+  grid.style.display = 'none';
+  detail.style.display = 'block';
+  document.getElementById('projectTitle').textContent = data.title;
+  document.getElementById('projectContent').innerHTML = data.content;
+}
+
+function closeProject() {
+  const grid = document.getElementById('projectsGrid');
+  const detail = document.getElementById('projectDetail');
+  
+  grid.style.display = 'grid';
+  detail.style.display = 'none';
+}
+
+// ── Init ──
+</script>
+</body>
+</html>
